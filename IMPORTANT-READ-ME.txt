@@ -1,0 +1,10 @@
+--------------------------------
+[***ScanX by Adam (sanct.os)***]
+--------------------------------
+
+This project has been revamped, I have not tested the edits so try it for yourself, cannot say 100% it will work or not.
+
+Also, this literally should not be used as an everyday cheat. It's for educational purposes and giving you an easy tutorial on making basic cheats. I am not responsible for what you do with this.
+
+If you do make your own project with some of my code, please credit me (adam/sanct.os)
+

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Editor X (CE Basic Remake).cpp">
+    <ClCompile Include="ScanX-Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

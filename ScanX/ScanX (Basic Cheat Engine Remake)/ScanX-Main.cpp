@@ -82,28 +82,30 @@ auto rbx_detect_and_edit(HANDLE rbx_process, const std::vector<LPVOID>& addresse
         if (VirtualProtectEx(rbx_process, address, new_value.size(), PAGE_EXECUTE_READWRITE, &old_protect)) {
             if (rbx_write_mem(rbx_process, address, new_value.c_str(), new_value.size())) {
                 set_color_console();
-                std::cout << "[*] Modified memory at address: " << address << std::endl;
+                std::cout << "[ ! debug ! ] changed address value at memory address: " << address << std::endl;
             }
             else {
-                std::cerr << "[e] Failed to write memory at address: " << address << std::endl;
+                std::cerr << "[!  error ! ] Failed to write memory at address: " << address << std::endl;
             }
             if (!VirtualProtectEx(rbx_process, address, new_value.size(), old_protect, &old_protect)) {
-                std::cerr << "[e] Failed to restore memory protection at address: " << address << std::endl;
+                std::cerr << "[ ! error ! ] could not restore memory protection at address: " << address << std::endl;
             }
         }
         else {
-            std::cerr << "[e] Failed to change memory protection for address: " << address << std::endl;
+            std::cerr << "[ ! error ! ] couldn't change memory protection at address -> " << address << std::endl;
         }
     }
 }
 
 auto main() -> int {
     set_color_console();
-    std::cout << "============ Pulsar Lite ============\n\n" << std::endl;
+    std::cout << "============ ScanX (Improved) ============\n\n" << std::endl;
     set_color_console();
-    std::cout << "*** Coded by ambulancity/adam ***\n\n\n" << std::endl;
+    std::cout << "[ ! credits ! ] created by adam (sanct.os on discord)\n\n\n" << std::endl;
     set_color_console();
-    std::cout << "Usage: search for a value, edit it, and specify the max number of addresses to scan (default 50000).\n\n" << std::endl;
+    std::cout << "[ ! note ! ] this program can be very buggy and will crash sometimes, and it shouldn't be used as a normal program but instead for learning how to make your own cheat (for educational purposes)\n\n\n" << std::endl;
+    set_color_console();
+    std::cout << "[ ! usage !]: search for a value in memory that an address will have (such as 196.2 for gravity), then set the threshold for how many addresses you want to scan that contains that value (default threshold is 50000).\n\n" << std::endl;
     srand(static_cast<unsigned int>(time(0)));
 
     HWND console_window = GetConsoleWindow();
@@ -115,25 +117,25 @@ auto main() -> int {
     auto rbx_pid = rbx_pid_get(rbx_process_name);
 
     if (rbx_pid == 0) {
-        std::cerr << "[e] Process not found. Make sure Roblox is running." << std::endl;
+        std::cerr << "[ !  error ! ] Roblox not found. | tip: make sure you have roblox open then you can use ScanX" << std::endl;
         return 1;
     }
 
     auto rbx_proc = OpenProcess(PROCESS_VM_READ | PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, rbx_pid);
 
     if (rbx_proc == nullptr) {
-        std::cerr << "[e] Failed to open process." << std::endl;
+        std::cerr << "[ !  error ! ] Failed to open process." << std::endl;
         return 1;
     }
 
     std::vector<LPVOID> found_addresses;
     size_t threshold = MAX_ADDRESSES;
 
-    std::cout << "Enter the value to search for: ";
+    std::cout << "[ ! scan ! ] enter the memory addresses value to scan for (example: 196.2 for gravity): ";
     std::string search_value;
     std::getline(std::cin, search_value);
-
-    std::cout << "Enter the threshold amount (number of matches required to stop scanning): ";
+    std::cout << "[ ! TIP ! ] the lower of a threshold to scan the better, the higher of threshold has more of a chance to crash";
+    std::cout << "[ ! threshold ! ] enter the threshold amount (number of memory addresses allowed to be scanned matching the search value): ";
     std::string threshold_input;
     std::getline(std::cin, threshold_input);
 
@@ -141,27 +143,27 @@ auto main() -> int {
         threshold = std::stoul(threshold_input);
     }
     catch (const std::invalid_argument&) {
-        std::cerr << "[e] Invalid threshold amount, using default value " << MAX_ADDRESSES << std::endl;
+        std::cerr << "[ ! error ! ] invalid amount, switching to default value (make sure its positive numbers and not A-Z)" << MAX_ADDRESSES << std::endl;
         threshold = MAX_ADDRESSES;
     }
 
-    std::cout << "Searching for addresses containing: " << search_value << std::endl;
+    std::cout << "[ ! scanning ! ] scanning for addresses with value: " << search_value << std::endl;
     rbx_scan_mem(rbx_proc, search_value, threshold, found_addresses);
 
     if (found_addresses.empty()) {
-        std::cerr << "[e] No addresses found." << std::endl;
+        std::cerr << "[ ! error ! ] no addresses found. if this happens your search value most likely does not exist in memory" << std::endl;
         CloseHandle(rbx_proc);
         return 1;
     }
 
-    std::cout << "[*] Found " << found_addresses.size() << " addresses." << std::endl;
+    std::cout << "[ ! debug ! ] found " << found_addresses.size() << " addresses." << std::endl;
 
-    std::cout << "Enter the new value to write (must match the size of the search value): ";
+    std::cout << "[ ! edit ! ] enter the new value to change the searched value(s): ";
     std::string new_value;
     std::getline(std::cin, new_value);
 
     if (new_value.size() != search_value.size()) {
-        std::cerr << "[e] New value must be the same size as the search value." << std::endl;
+        std::cerr << "[ ! error ! ] New value must be the same size as the search value." << std::endl;
         CloseHandle(rbx_proc);
         return 1;
     }
