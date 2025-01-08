@@ -1,4 +1,1 @@
-#Scan-X
-This app works like Cheat Engine when scanning and editing memory values. For educational purposes only.
-
-(originally Editor X)
+Scan-X (formally Editor-X) is a basic remake of cheat engine's value scanner and changer. I am not responsible if you get in trouble with this, use at your own risk. (this is also for educational purposes only)
